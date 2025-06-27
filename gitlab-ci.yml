@@ -1,0 +1,37 @@
+stages:
+  - validate
+  - plan
+  - apply
+
+variables:
+  TF_ROOT: "./"  # change if your .tf files are in a subfolder
+
+before_script:
+  - apt-get update && apt-get install -y curl unzip
+  - curl -L -o opentofu.tar.gz https://github.com/opentofu/opentofu/releases/download/v1.9.1/tofu_1.9.1_linux_amd64.tar.gz
+  - tar -xzf opentofu.tar.gz
+  - mv tofu /usr/local/bin/tofu
+  - tofu version
+  - mkdir -p ~/.oci
+  - echo "$OCI_CONFIG" > ~/.oci/config
+  - echo "$OCI_PRIVATE_KEY" > ~/.oci/oci_api_key.pem
+  - chmod 600 ~/.oci/oci_api_key.pem
+
+validate:
+  stage: validate
+  script:
+    - tofu -chdir=$TF_ROOT init -input=false
+    - tofu -chdir=$TF_ROOT validate
+
+plan:
+  stage: plan
+  script:
+    - tofu -chdir=$TF_ROOT init -input=false
+    - tofu -chdir=$TF_ROOT plan
+
+apply:
+  stage: apply
+  script:
+    - tofu -chdir=$TF_ROOT init -input=false
+    - tofu -chdir=$TF_ROOT apply -auto-approve
+  when: manual
