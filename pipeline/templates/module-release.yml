@@ -8,7 +8,7 @@ include:
       allow_failure: false
       
 
-  - component: gitlab.com/components/opentofu/module-validate@1.1.0
+  - component: gitlab.com/components/opentofu/module-release@1.1.0
     inputs:
       module_system: oci
       rules:
