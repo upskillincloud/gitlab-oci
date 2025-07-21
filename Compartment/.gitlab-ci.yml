@@ -1,0 +1,2 @@
+include:
+  - component: gitlab.com/rishabhsi-group/information-tech/cloud-team/iac/oci/terraform-modules/pipeline/module-release@stable
