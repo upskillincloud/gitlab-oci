@@ -1,26 +1,9 @@
+
 stages:
-  - validate
-  - release
-
-include:
-  - component: gitlab.com/components/opentofu/fmt@1.1.0
-    inputs:
-      allow_failure: false
-      
-
-  - component: gitlab.com/components/opentofu/module-validate@1.1.0
-    inputs:
-      module_system: oci
-      rules:
-        # Semantic versioning - split long line
-        - if: '$CI_COMMIT_TAG =~ /^[0-9]+\.[0-9]+\.[0-9]+$/'
-
-validate:
-  stage: validate
+  - linting
+yaml-lint:
+  stage: linting
+  #image: ${CONTAINER_REGISTRY}/pipeline-components/yamllint:latest
+  image: pipelinecomponents/yamllint:latest
   script:
-    - |
-      if grep -q "oracle/oci" terraform.tf; then
-        echo "Error: Use hashicorp/oci provider instead of oracle/oci."
-        echo "see issue 23"
-        exit 123
-      fi
+    - yamllint . --no-warnings
